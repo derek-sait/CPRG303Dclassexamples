@@ -1,118 +1,112 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+"use client"
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
+  Alert,
+  Button,
+  FlatList,
+  Image,
+  Modal,
+  Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
   View,
 } from 'react-native';
+import MyComponent from './src/components/my-component';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+function App(): React.JSX.Element {
+  let darkModeEnabled = false;
+  let dynamicStyles = darkModeEnabled ? styles.darkMode : styles.lightMode;
+  const simpleFunc = () => { Alert.alert('Hello World!'); };
+  let data = [];
+  for (let i = 0; i < 100; i++) {
+    let thisItem = { id: i, text: `Item #${i}` };
+    data.push(thisItem);
+  }
+  function ListItemRenderComp({item}:{item:{id:number,text:string}}) {
+    return <Text style={styles.myCustomText}>{item.text}</Text>;
+  }
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const [isModalOpen, setModalOpen] = useState(false);
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={{...styles.container, ...dynamicStyles}}>
+      {/* <Text style={ {fontSize:20,color:'blue'} } >Hello World!</Text> */}
+      <Text style={styles.myCustomText}>Hello World!</Text>
+      <MyComponent />
+      <Image
+        source={require('./src/assets/images/duck.jpg')}
+        style={styles.myCustomImage}
+      />
+      {/* <Image source={ {uri:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Sheba1.JPG/800px-Sheba1.JPG'} } style={styles.myCustomImage} /> */}
+      <Text>Enter Phone Number:</Text>
+      <TextInput
+        style={styles.myCustomTextInput}
+        placeholder="123-555-6789"
+        keyboardType="numeric"
+      />
+      <Button title="React Native Alert" onPress={simpleFunc} />
+      <Pressable onPress={openModal} style={ 
+        ( {pressed} ) => [styles.btn, { backgroundColor: pressed ? 'yellow' : 'green' } ]
+      }>
+        <Text style={{color:'white',fontSize:30}}>Open Modal!</Text>
+      </Pressable>
+      <Modal visible={isModalOpen} animationType='slide' onRequestClose={closeModal}>
+        <View>
+          <Text style={styles.myCustomText}>This is a Modal dialog!</Text>
+          <Button title='Close Modal' onPress={closeModal} />
+        </View>
+      </Modal>
+
+      <FlatList data={data} renderItem={ListItemRenderComp} keyExtractor={ item => item.id.toString() } />
+      {/* <ScrollView style={ {width: 200} }>
+        <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque dolore nemo, autem, suscipit modi amet expedita eveniet corporis repudiandae laboriosam omnis eos officia asperiores corrupti totam tempora! Maxime, dolore cupiditate!</Text>
+        <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias ut tempore et libero iure reiciendis, inventore rerum esse, neque consequatur deleniti quia voluptas laboriosam sequi dolor mollitia consectetur, qui officiis!</Text>
+        <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente exercitationem consequatur facilis. Eligendi aperiam veniam nulla sapiente nostrum ipsa, mollitia quibusdam veritatis sed ad nam quo molestiae, culpa accusamus asperiores?</Text>
+        <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam incidunt dicta, deserunt suscipit excepturi quae accusamus facere, alias soluta reiciendis laboriosam hic a iusto optio inventore quaerat ex minima cum.</Text>
+      </ScrollView> */}
+
     </View>
   );
 }
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  sectionTitle: {
+  myCustomTextInput: {
     fontSize: 24,
-    fontWeight: '600',
+    backgroundColor: '#aaaaaa',
+    borderColor: 'black',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    width: 260,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  myCustomImage: {
+    width: 200,
+    height: 200,
   },
-  highlight: {
-    fontWeight: '700',
+  myCustomText: {
+    fontSize: 30,
+    color: '#55AA55',
+    // textAlign: 'center'
   },
+  darkMode: {
+    backgroundColor: '#333333',
+  },
+  lightMode: {
+    backgroundColor: '#DDDDDD',
+  },
+  btn: {
+    marginTop: 5,
+    padding: 10,
+    borderRadius: 5
+  }
 });
 
 export default App;
