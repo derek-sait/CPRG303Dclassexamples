@@ -15,6 +15,8 @@ import {
   View,
 } from 'react-native';
 import MyComponent from './src/components/my-component';
+import CompWithProps from './src/components/simple-props';
+import Counter from './src/components/counter-comp';
 
 function App(): React.JSX.Element {
   let darkModeEnabled = false;
@@ -28,13 +30,22 @@ function App(): React.JSX.Element {
   function ListItemRenderComp({item}:{item:{id:number,text:string}}) {
     return <Text style={styles.myCustomText}>{item.text}</Text>;
   }
-
   const [isModalOpen, setModalOpen] = useState(false);
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
+  let person = {
+    fname: "Alice",
+    age: 25,
+    email: "alice@sait.ca"
+  }
+
   return (
     <View style={{...styles.container, ...dynamicStyles}}>
+
+      {/* <CompWithProps fname={person.fname} age={person.age} email={person.email} /> */}
+      <CompWithProps personObj={person} />
+
       {/* <Text style={ {fontSize:20,color:'blue'} } >Hello World!</Text> */}
       <Text style={styles.myCustomText}>Hello World!</Text>
       <MyComponent />
@@ -62,7 +73,9 @@ function App(): React.JSX.Element {
         </View>
       </Modal>
 
-      <FlatList data={data} renderItem={ListItemRenderComp} keyExtractor={ item => item.id.toString() } />
+      <Counter />
+
+      {/* <FlatList data={data} renderItem={ListItemRenderComp} keyExtractor={ item => item.id.toString() } /> */}
       {/* <ScrollView style={ {width: 200} }>
         <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque dolore nemo, autem, suscipit modi amet expedita eveniet corporis repudiandae laboriosam omnis eos officia asperiores corrupti totam tempora! Maxime, dolore cupiditate!</Text>
         <Text style={styles.myCustomText}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias ut tempore et libero iure reiciendis, inventore rerum esse, neque consequatur deleniti quia voluptas laboriosam sequi dolor mollitia consectetur, qui officiis!</Text>
